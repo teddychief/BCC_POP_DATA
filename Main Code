@@ -1,0 +1,114 @@
+import os
+import numpy as np 
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt 
+%matplotlib inline 
+
+path = '/Users/mac/Desktop'
+os.chdir(path)
+os.getcwd()
+
+df = pd.read_csv('population_data.csv')
+del df["Unnamed: 8"]
+df.head()
+
+##Filtering Data
+#BCC
+df1 = (df['Estimate_By'] == 'BCC')
+BCCdf = df[df1]
+
+print(BCCdf.shape)
+BCCdf.head()
+
+#ZIMSTATS
+df2 = (df['Estimate_By'] == 'ZIMSTAT')
+ZIMSTATdf = df[df2]
+
+print(ZIMSTATdf.shape)
+ZIMSTATdf.head()
+
+#darktheme background on graphs
+sns.set_theme(style="darkgrid")
+
+year_X = list(BCCdf['Year'])
+
+#BCC lines
+BCC_est_High_Y = list(BCCdf['High_Growth_Rate'])
+
+plt.plot(year_X, BCC_est_High_Y, color ='g',linestyle ='-.')
+
+BCC_est_Y = list(BCCdf['Medium_Growth_Rate'])
+
+plt.plot(year_X, BCC_est_Y, color ='k' , linestyle =':')
+
+BCC_est_low_Y = list(BCCdf['Low_Growth_Variant'])
+
+line1, = plt.plot(year_X, BCC_est_low_Y, color ='b',label = 'BCC_Estimate')
+
+
+
+plt.legend(['High','Medium','low'])
+
+#ZIMSTATS lines
+
+ZIMSt_est_High_Y = list(ZIMSTATdf['High_Growth_Rate'])
+
+plt.plot(year_X, ZIMSt_est_High_Y, color ='g' , linestyle ='-.')
+
+ZIMSt_est_Y = list(ZIMSTATdf['Medium_Growth_Rate'])
+
+plt.plot(year_X, ZIMSt_est_Y, color ='k' , linestyle =':')
+
+ZIMSt_est_low_Y = list(ZIMSTATdf['Low_Growth_Variant'])
+
+line2, = plt.plot(year_X, ZIMSt_est_low_Y, color ='r', label = 'ZimStat_Estimate')
+
+
+
+plt.legend(['High','Medium','low'], loc='center right')
+
+
+
+plt.yticks(np.arange(650000, 1610000, 95000))
+plt.title('Bulawayo Growth Rate Comparison')
+plt.xlabel('Year')
+plt.ylabel('Population Estmate (Million individuals)')
+#BCC legend
+first_legend = plt.legend(handles=[line1],loc='upper left')
+ax = plt.gca().add_artist(first_legend)
+
+#ZIMSTAT legend
+
+second_legend = plt.legend(handles=[line2],loc='lower right')
+ax = plt.gca().add_artist(second_legend)
+#OVERRALL
+
+plt.legend(['High','Medium','low'], loc='center right')
+
+Bulawayo_Growth_Rate_Comparison = plt
+plt.show()
+
+##PIE CHATS
+Exp_Values = [16741,6693,3468,1093] 
+Exp_Labels =['Residential (16741 ha)','Employment (6693 ha)','Open Space (3468 ha)','Social and Community (1093 ha)']
+plt.axis("equal")
+plt.pie(Exp_Values, labels=Exp_Labels, radius = 0.9, autopct='%0.0f%%', shadow= True, explode=[0,0,0,1], startangle= 300)
+
+plt.title('Land Needs in Bulawayo, 2019 - 2034', fontsize=22)
+plt.legend(loc= 'upper left', title= 'Key',bbox_to_anchor=(1, 0.5)
+)          
+plt.show()
+plt.savefig('/Users/mac/Documents/BCC_POP_DATA/piechat.pdf', bbox_inches ='tight', pad_inches = 2, transparent = True)
+
+#LANDNEEDS 
+Exp_Values1 = [13393,2511,837] 
+Exp_Labels1 =['High Desity','Medium Density','Low Density']
+labels = ['High Desity (13393 ha)','Medium Density (2511 ha)','Low Density (837 ha)']
+
+plt.axis("equal")
+plt.pie(Exp_Values1, labels=labels, radius = 1, autopct='%0.0f%%', shadow= True, startangle= 170, explode=[0,0,1])
+
+plt.title('Land Needs Per Resindential Area, Bulawayo, 2019 - 2034', fontsize=22)
+plt.legend(loc= 'lower left', title= 'Key', bbox_to_anchor=(1, 0.5))          
+plt.show()
